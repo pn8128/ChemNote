@@ -7,10 +7,12 @@ class ChemNumBuilder():
     def __init__(self, printfunction=print):
         self.pf = printfunction
 
-    def define(self, number, units=dict(), label=None):
+    def define(self, number, units=dict(), expr=dict(), label=None):
         if type(units) == str:
             units = {units: 1}
-        return ChemNum(number, units, self.pf, label)
+        if type(expr) == str:
+            units = {expr: 1}
+        return ChemNum(number, units, expr, self.pf, label)
 
     @staticmethod
     def printMarkdown(txt):
@@ -29,13 +31,14 @@ class ChemNumBuilder():
 
 
 class ChemNum():
-    def __init__(self, number, units, pf, label):
+    def __init__(self, number, units, expr, pf, label):
         """
         - number:float
         - unit:dict:key=name:value=dimention
         """
         self.num = number
         self.units = units
+        self.expr = expr
         self.print = pf
         self.label = label
         self.degC2K()
@@ -118,32 +121,34 @@ class ChemNum():
         new.num -= othr.num
         return new
 
+    @staticmethod
+    def _muldiv(cn1, cn2, isMul=True):
+        for key in cn2.keys():
+            if key in cn1.keys():
+                if isMul:
+                    cn1[key] += cn2[key]
+                else:
+                    cn1[key] -= cn2[key]
+            else:
+                cn1[key] = cn2[key]
+        nu_items = list(cn1.items())
+        for k, v in nu_items:
+            if v == 0:
+                del cn1[k]
+        return cn1
+
     def __mul__(self, othr):
         new = self._copy()
         new.num *= othr.num
-        for unt in othr.units.keys():
-            if unt in new.units.keys():
-                new.units[unt] += othr.units[unt]
-            else:
-                new.units[unt] = othr.units[unt]
-        nu_items = list(new.units.items())
-        for k, v in nu_items:
-            if v == 0:
-                del new.units[k]
+        new.units = self._muldiv(new.units, othr.units, True)
+        new.expr = self._muldiv(new.expr, othr.expr, True)
         return new
 
     def __truediv__(self, othr):
         new = self._copy()
         new.num /= othr.num
-        for unt in othr.units.keys():
-            if unt in new.units.keys():
-                new.units[unt] -= othr.units[unt]
-            else:
-                new.units[unt] = othr.units[unt]
-        nu_items = list(new.units.items())
-        for k, v in nu_items:
-            if v == 0:
-                del new.units[k]
+        new.units = self._muldiv(new.units, othr.units, False)
+        new.expr = self._muldiv(new.expr, othr.expr, False)
         return new
 
     def __pow__(self, pownum):
@@ -164,6 +169,12 @@ class ChemNum():
             pre = "$"
         end = ""
         for k, v in self.units.items():
+            end += r"\, "
+            if v == 1:
+                end += k + " "
+            else:
+                end += k + "^{" + str(v) + "} "
+        for k, v in self.expr.items():
             end += r"\, "
             if v == 1:
                 end += k + " "
