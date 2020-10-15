@@ -57,18 +57,18 @@ class ChemNum():
 
     def forceSI(self, soft=True):
         defaultDict = {
-            "mg": (1e-6, (("kg", 1))),
-            "g": (1e-3, (("kg", 1))),
-            "atm": (101325, (("Pa"))),
+            "mg": (1e-6, (("kg", 1),)),
+            "g": (1e-3, (("kg", 1),)),
+            "atm": (101325, (("Pa"),)),
             "%": (1e-2, ()),
-            "ton": (1e3, (("kg", 1))),
-            "kJ": (1e3, (("J", 1))),
+            "ton": (1e3, (("kg", 1),)),
+            "kJ": (1e3, (("J", 1),)),
             "cp": (1e-3, (("Pa", 1), ("s", 1))),
-            "day": (24 * 3600, (("s", 1))),
-            "mm": (1e-3, (("m", 1))),
-            "km": (1e3, (("m", 1))),
+            "day": (24 * 3600, (("s", 1),)),
+            "mm": (1e-3, (("m", 1),)),
+            "km": (1e3, (("m", 1),)),
             "cm": (1e-2, (("m", 1))),
-            "L": (1e-3, (("m", 3)))
+            "L": (1e-3, (("m", 3),))
         }
         self.convertUnits(defaultDict)
 
@@ -76,11 +76,14 @@ class ChemNum():
         cnvtarget = set(self.units.keys()) & set(dct.keys())
         for unt in cnvtarget:
             self.num *= dct[unt][0]**self.units[unt]
-            new_unit, new_dim = dct[unt][1]
-            if new_unit in self.units.keys():
-                self.units[new_unit] += new_dim * self.units[unt]
-            else:
-                self.units[new_unit] = new_dim * self.units[unt]
+            if not isinstance(dct[unt][1][0], tuple):
+                dct[unt][1] = (dct[unt][1],)
+            for tmp in dct[unt][1]:
+                new_unit, new_dim = tmp
+                if new_unit in self.units.keys():
+                    self.units[new_unit] += new_dim * self.units[unt]
+                else:
+                    self.units[new_unit] = new_dim * self.units[unt]
             del self.units[unt]
 
     def _check_sameunit(self, othr):
