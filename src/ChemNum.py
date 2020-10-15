@@ -86,6 +86,17 @@ class ChemNum():
                     self.units[new_unit] = new_dim * self.units[unt]
             del self.units[unt]
 
+    def subs(self, vars, inplace=False):
+        cnvtarget = set(self.expr.keys()) & set(vars.keys())
+        new = self._copy()
+        for key in cnvtarget:
+            new *= vars[key]**new.expr[key]
+            del new.expr[key]
+        if inplace:
+            self = new
+        else:
+            return new
+
     def _check_sameunit(self, othr):
         if not self.units == othr.units:
             print(
