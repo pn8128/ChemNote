@@ -1,0 +1,15 @@
+Metadata-Version: 2.1
+Name: ChemNote
+Version: 0.0.1
+Summary: Physical and chemical arithmetic tools for jupyter notebook
+Home-page: https://github.com/pn8128/ChemNote
+Author: kota oishi
+Author-email: oishi-kota454@g.ecc.u-tokyo.ac.jp
+License: UNKNOWN
+Description: # chem_calc
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
