@@ -47,6 +47,7 @@ class ChemNum():
         self.expr = expr
         self.print = pf
         self.label = label
+        self.degF2degC()
         self.degC2K()
         self.forceSI()
         self.sig_digits = sig_digits
@@ -65,6 +66,11 @@ class ChemNum():
             self.num += 273.15
             self.units = {"K": 1}
 
+    def degF2degC(self,):
+        if self.units == {"degF": 1}:
+            self.num = (self.num - 32) * 5 / 9
+            self.units = {"degC": 1}
+
     def forceSI(self, soft=True):
         defaultDict = {
             "mg": (1e-6, ("kg", 1)),
@@ -79,6 +85,7 @@ class ChemNum():
             "km": (1e3, ("m", 1)),
             "cm": (1e-2, ("m", 1)),
             "L": (1e-3, ("m", 3)),
+            "mL": (1e-6, ("m", 3)),
             "inch": (2.54e-2, ("m", 1)),
             "foot": (30.48e-2, ("m", 1)),
             "feet": (30.48e-2, ("m", 1)),
@@ -86,7 +93,13 @@ class ChemNum():
             "mile": (1609, ("m", 1)),
             "lb": (0.45359237, ("kg", 1)),
             "oz": (28.349523125e-3, ("kg", 1)),
-            "gr": (0.06479891e-3, ("kg", 1))
+            "gr": (0.06479891e-3, ("kg", 1)),
+            "impgal": (4.54609e-3, ("m", 3)),
+            "impqt": (1.137e-3, ("m", 3)),
+            "imppt": (568.3e-6, ("m", 3)),
+            "gal": (3.785412e-3, ("m", 3)),
+            "qt": (3.785412e-3 / 4, ("m", 3)),
+            "pt": (3.785412e-3 / 8, ("m", 3))
         }
         self.convertUnits(defaultDict)
 
@@ -94,8 +107,8 @@ class ChemNum():
         cnvtarget = set(self.units.keys()) & set(dct.keys())
         for unt in cnvtarget:
             self.num *= dct[unt][0]**self.units[unt]
-            if not isinstance(dct[unt][1][0], tuple):
-                dct[unt][1] = (dct[unt][1],)
+            if len(dct[unt][1]) != 0 and not isinstance(dct[unt][1][0], tuple):
+                dct[unt] = (dct[unt][0], (dct[unt][1],))
             for tmp in dct[unt][1]:
                 new_unit, new_dim = tmp
                 if new_unit in self.units.keys():
@@ -191,10 +204,14 @@ class ChemNum():
             new.units[unt] *= pownum
         return new
 
-    def __str__(self,):
+    def __str__(self, n=None):
         """
         n:int:number of digits:
         """
+        if n is not None:
+            digits = n
+        else:
+            digits = self.sig_digits
         if self.label is not None:
             pre = f"${self.label}: "
         else:
@@ -212,7 +229,7 @@ class ChemNum():
                 end += k + " "
             else:
                 end += k + "^{" + str(v) + "} "
-        main = "{:." + str(self.sig_digits) + "e} "
+        main = "{:." + str(digits) + "e} "
         main = main.format(self.num)
         n, p = main.split("e")
         p = int(p)
@@ -235,5 +252,5 @@ class ChemNum():
     def __float__(self,):
         return float(self.num)
 
-    def show(self,):
-        self.print(self.__str__())
+    def show(self, n):
+        self.print(self.__str__(n))
