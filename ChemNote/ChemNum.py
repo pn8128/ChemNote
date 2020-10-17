@@ -75,7 +75,7 @@ class ChemNum():
         defaultDict = {
             "mg": (1e-6, ("kg", 1)),
             "g": (1e-3, ("kg", 1)),
-            "atm": (101325, ("Pa")),
+            "atm": (101325, ("Pa", 1)),
             "%": (1e-2, ()),
             "ton": (1e3, ("kg", 1)),
             "kJ": (1e3, ("J", 1)),
@@ -156,15 +156,25 @@ class ChemNum():
 
     def __add__(self, othr):
         new = self._copy()
-        new._check_sameunit(othr)
-        new.num += othr.num
-        return new
+        if isinstance(othr, int) or isinstance(othr, float):
+            self._check_zerounit(self)
+            new.num += othr
+            return new
+        elif isinstance(othr, ChemNum):
+            new._check_sameunit(othr)
+            new.num += othr.num
+            return new
 
     def __sub__(self, othr):
         new = self._copy()
-        new._check_sameunit(othr)
-        new.num -= othr.num
-        return new
+        if isinstance(othr, int) or isinstance(othr, float):
+            self._check_zerounit(self)
+            new.num -= othr
+            return new
+        elif isinstance(othr, ChemNum):
+            new._check_sameunit(othr)
+            new.num -= othr.num
+            return new
 
     @staticmethod
     def _muldiv(cn1, cn2, isMul=True):
@@ -175,7 +185,10 @@ class ChemNum():
                 else:
                     cn1[key] -= cn2[key]
             else:
-                cn1[key] = cn2[key]
+                if isMul:
+                    cn1[key] = cn2[key]
+                else:
+                    cn1[key] = -cn2[key]
         nu_items = list(cn1.items())
         for k, v in nu_items:
             if v == 0:
@@ -184,17 +197,25 @@ class ChemNum():
 
     def __mul__(self, othr):
         new = self._copy()
-        new.num *= othr.num
-        new.units = self._muldiv(new.units, othr.units, True)
-        new.expr = self._muldiv(new.expr, othr.expr, True)
-        return new
+        if isinstance(othr, int) or isinstance(othr, float):
+            new.num *= othr
+            return new
+        elif isinstance(othr, ChemNum):
+            new.num *= othr.num
+            new.units = self._muldiv(new.units, othr.units, True)
+            new.expr = self._muldiv(new.expr, othr.expr, True)
+            return new
 
     def __truediv__(self, othr):
         new = self._copy()
-        new.num /= othr.num
-        new.units = self._muldiv(new.units, othr.units, False)
-        new.expr = self._muldiv(new.expr, othr.expr, False)
-        return new
+        if isinstance(othr, int) or isinstance(othr, float):
+            new.num /= othr
+            return new
+        elif isinstance(othr, ChemNum):
+            new.num /= othr.num
+            new.units = self._muldiv(new.units, othr.units, False)
+            new.expr = self._muldiv(new.expr, othr.expr, False)
+            return new
 
     def __pow__(self, pownum):
         new = self._copy()
@@ -213,7 +234,7 @@ class ChemNum():
         else:
             digits = self.sig_digits
         if self.label is not None:
-            pre = f"${self.label}: "
+            pre = f"{self.label}: "
         else:
             pre = ""
         end = ""
