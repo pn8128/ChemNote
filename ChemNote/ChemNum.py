@@ -183,14 +183,14 @@ class ChemNum():
             new.units[unt] *= pownum
         return new
 
-    def show(self, n=3):
+    def __str__(self,):
         """
         n:int:number of digits:
         """
         if self.label is not None:
             pre = f"${self.label}: "
         else:
-            pre = "$"
+            pre = ""
         end = ""
         for k, v in self.units.items():
             end += r"\, "
@@ -213,9 +213,19 @@ class ChemNum():
         else:
             power = "\\times 10^{" + str(p) + "}"
         main = n + power
-        self.print(pre + main + end + "$")
+        return pre + main + end + ""
 
     def _copy(self,):
         new = copy.deepcopy(self)
         new.resetlabel()
         return new
+
+    def __repr__(self,):
+        self.print(self.__str__())
+        return ""
+
+    def __float__(self,):
+        return float(self.num)
+
+    def show(self,):
+        self.print(self.__str__())
