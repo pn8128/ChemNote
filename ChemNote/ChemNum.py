@@ -11,14 +11,18 @@ class ChemNumBuilder():
     def __init__(self, printfunction=printMarkdown):
         self.pf = printfunction
 
-    def define(self, number, units=dict(), expr=dict(), label=None):
+    def define(
+            self,
+            number,
+            units=dict(),
+            expr=dict(),
+            sig_digits=3,
+            label=None):
         if type(units) == str:
             units = {units: 1}
         if type(expr) == str:
             units = {expr: 1}
-        return ChemNum(number, units, expr, self.pf, label)
-
-    @staticmethod
+        return ChemNum(number, units, expr, self.pf, sig_digits, label)
 
     @staticmethod
     def exp(othr):
@@ -33,7 +37,7 @@ class ChemNumBuilder():
 
 
 class ChemNum():
-    def __init__(self, number, units, expr, pf, label):
+    def __init__(self, number, units, expr, pf, sig_digits, label):
         """
         - number:float
         - unit:dict:key=name:value=dimention
@@ -45,9 +49,13 @@ class ChemNum():
         self.label = label
         self.degC2K()
         self.forceSI()
+        self.sig_digits = sig_digits
 
     def setlabel(self, label):
         self.label = label
+
+    def setdigits(self, digits):
+        self.sig_digits = digits
 
     def resetlabel(self,):
         self.label = None
@@ -196,7 +204,7 @@ class ChemNum():
                 end += k + " "
             else:
                 end += k + "^{" + str(v) + "} "
-        main = "{:." + str(n) + "e} "
+        main = "{:." + str(self.sig_digits) + "e} "
         main = main.format(self.num)
         n, p = main.split("e")
         p = int(p)
