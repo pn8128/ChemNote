@@ -1,8 +1,0 @@
-README.md
-setup.py
-ChemNote/ChemNum.py
-ChemNote/__init__.py
-ChemNote.egg-info/PKG-INFO
-ChemNote.egg-info/SOURCES.txt
-ChemNote.egg-info/dependency_links.txt
-ChemNote.egg-info/top_level.txt
