@@ -20,7 +20,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name="ChemNote",  # Replace with your own username
-    version="0.0.7",
+    version="0.0.8",
     author="kota oishi",
     author_email="oishi-kota454@g.ecc.u-tokyo.ac.jp",
     description="Physical and chemical arithmetic tools for jupyter notebook",
