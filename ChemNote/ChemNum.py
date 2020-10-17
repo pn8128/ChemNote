@@ -3,8 +3,12 @@ from IPython.display import display, Markdown
 import copy
 
 
+def printMarkdown(txt):
+    display(Markdown("$" + txt + "$"))
+
+
 class ChemNumBuilder():
-    def __init__(self, printfunction=print):
+    def __init__(self, printfunction=printMarkdown):
         self.pf = printfunction
 
     def define(self, number, units=dict(), expr=dict(), label=None):
@@ -15,8 +19,6 @@ class ChemNumBuilder():
         return ChemNum(number, units, expr, self.pf, label)
 
     @staticmethod
-    def printMarkdown(txt):
-        display(Markdown(txt))
 
     @staticmethod
     def exp(othr):
