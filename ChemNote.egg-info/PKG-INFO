@@ -6,7 +6,11 @@ Home-page: https://github.com/pn8128/ChemNote
 Author: kota oishi
 Author-email: oishi-kota454@g.ecc.u-tokyo.ac.jp
 License: UNKNOWN
-Description: # chem_calc
+Description: # ChemNote
+        
+        ChemNote is jupyter extention to execute physical calculation with unit.
+        
+        
 Platform: UNKNOWN
 Classifier: Programming Language :: Python :: 3
 Classifier: License :: OSI Approved :: MIT License
