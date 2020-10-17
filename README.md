@@ -2,10 +2,13 @@
 
 ChemNote is jupyter extention to execute physical calculation with unit.
 
-## Usage
-### Installation
-#### Pip
+## Installation
+### Pip
 
 ```sh
-pip install -r requirements.txt
+pip install ChemNote
 ```
+
+## How to Use
+
+demo is [here](notebook/demo.ipynb)
