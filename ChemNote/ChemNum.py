@@ -240,19 +240,18 @@ class ChemNum():
             pre = ""
         end = ""
         for k, v in self.units.items():
-            end += r"\, "
+            end += r"\,\mbox{ "
             if v == 1:
-                end += k + " "
+                end += k + " }"
             else:
-                end += k + "^{" + str(v) + "} "
-        end += r"\mbox{"
+                end += k + "^{" + str(v) + "} }"
         for k, v in self.expr.items():
             end += r"\, "
             if v == 1:
                 end += k + " "
             else:
                 end += k + "^{" + str(v) + "} "
-        end += "}"
+
         main = "{:." + str(digits) + "e} "
         main = main.format(self.num)
         n, p = main.split("e")
