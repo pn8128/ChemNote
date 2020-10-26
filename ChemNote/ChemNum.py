@@ -245,12 +245,14 @@ class ChemNum():
                 end += k + " "
             else:
                 end += k + "^{" + str(v) + "} "
+        end += r"\mbox{"
         for k, v in self.expr.items():
             end += r"\, "
             if v == 1:
                 end += k + " "
             else:
                 end += k + "^{" + str(v) + "} "
+        end += "}"
         main = "{:." + str(digits) + "e} "
         main = main.format(self.num)
         n, p = main.split("e")
