@@ -19,8 +19,8 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setup(
-    name="ChemNote",  # Replace with your own username
-    version="0.0.9",
+    name="ChemNote",
+    version="0.0.10",
     author="kota oishi",
     author_email="oishi-kota454@g.ecc.u-tokyo.ac.jp",
     description="Physical and chemical arithmetic tools for jupyter notebook",
